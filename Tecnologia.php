@@ -3,7 +3,7 @@ require_once __DIR__.'/Producto.php';
 require_once __DIR__.'/Gestionable.php';
 
 class Tecnologia extends Producto{
-    protected bool $garantia;
+    private bool $garantia;
     private const DESCUENTO_ULTIMO_DOMINGO = 0.85; //%15
 
     public function __construct(int $id, string $nombre, float $precio, bool $garantia) {

@@ -3,7 +3,7 @@ require_once __DIR__.'/Producto.php';
 require_once __DIR__.'/Gestionable.php';
 
 class Mueble extends Producto{
-    protected string $material;
+    private string $material;
     private const DESCUENTO_MATERIAL_PINO = 0.93; //%7
 
     public function __construct(int $id, string $nombre, float $precio, string $material) {
