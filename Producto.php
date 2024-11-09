@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__.'/Gestionable.php';
+require_once __DIR__.'/IGestionable.php';
 
-abstract class Producto implements Gestionable {
+abstract class Producto implements IGestionable {
     protected int $id;
     protected string $nombre;
     protected float $precio;

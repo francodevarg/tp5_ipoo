@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__.'/Producto.php';
-require_once __DIR__.'/Gestionable.php';
 
 class Mueble extends Producto{
     private string $material;
