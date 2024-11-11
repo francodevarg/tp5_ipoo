@@ -5,14 +5,12 @@ require_once __DIR__.'/Query.php';
 class Ropa extends Producto{
     private string $talla;
     private const DESCUENTO_REBAJAS = 0.90;
-
     private Query $query;
-    private const TABLE = 'ropa';
 
     public function __construct(int $id, string $descripcion,string $detalle, float $precio, int $stock, string $talla) {
         parent::__construct($id,$descripcion,$detalle,$precio,$stock); 
         $this->talla = $talla;
-        $this->query = new Query(self::TABLE);
+        $this->query = new Query(strtolower($this::class));
     }
 
     public function calcularDescuento(): float {
@@ -26,27 +24,63 @@ class Ropa extends Producto{
         $this->query->insert($this->serializar());
     }
 
-    public function modificar($valores):void {
-        echo "Modificando la ropa: $this->descripcion";
-        if (isset($valores['talla'])) {
-            echo "| talla $this->talla -> ".$valores['talla'];
-            $this->talla = $valores['talla'];
+    public function modificar(array $valores): void {
+        echo "Modificando la ropa: $this->detalle\n";
+
+        // Validar los campos antes de modificar
+        if (!$this->sonCamposValidos($valores)) {
+            throw new Exception("Los valores proporcionados no son válidos.");
         }
-        if (isset($valores['precio'])) {
-            echo "| Precio {$this->getPrecio()} -> ".$valores['precio'];
-            $this->setPrecio($valores['precio']);
+
+        // Actualizar los valores de la instancia con los nuevos valores
+        foreach ($valores as $campo => $valor) {
+            if (property_exists($this, $campo)) {
+                $this->$campo = $valor;
+            }
         }
-        echo "\n";
+
+        // Ejecutar la query de actualización
+        $this->query->update($valores, 'id' ,$this->id);
+    }
+
+
+    private function sonCamposValidos(array $valores): bool {
+        // Validar 'descripcion' (string no vacío)
+        if (isset($valores['descripcion']) && !is_string($valores['descripcion'])) {
+            return false;
+        }
+
+        // Validar 'detalle' (string no vacío)
+        if (isset($valores['detalle']) && !is_string($valores['detalle'])) {
+            return false;
+        }
+
+        // Validar 'precio' (float mayor a 0)
+        if (isset($valores['precio']) && (!is_float($valores['precio']) || $valores['precio'] <= 0)) {
+            return false;
+        }
+
+        // Validar 'stock' (int mayor o igual a 0)
+        if (isset($valores['stock']) && (!is_int($valores['stock']) || $valores['stock'] < 0)) {
+            return false;
+        }
+
+        if (isset($valores['talla']) && (!is_string($valores['talla']))) {
+            return false;
+        }
+
+        return true;
     }
 
     public function eliminar() {
         echo "Eliminando la ropa: $this->descripcion\n";
+        $this->query->delete('id' ,$this->id);
     }
 
     public function listar(): ?array
     {
         echo "Listar" .PHP_EOL;
-        $ropas =  $this->query->selectAll(self::TABLE);
+        $ropas =  $this->query->selectAll();
         return $ropas;
     }
 

@@ -5,14 +5,13 @@ require_once __DIR__.'/Query.php';
 class Tecnologia extends Producto{
     private int $garantia;
     private Query $query;
-    private const TABLE = 'tecnologia';
 
     private const DESCUENTO_ULTIMO_DOMINGO = 0.85; //%15
 
     public function __construct(int $id, string $descripcion,string $detalle, float $precio, int $stock, int $garantia) {
         parent::__construct($id,$descripcion,$detalle,$precio,$stock); 
         $this->garantia = $garantia;
-        $this->query = new Query(self::TABLE);
+        $this->query = new Query(strtolower($this::class));
     }
 
     public function calcularDescuento():float {
